@@ -6,22 +6,22 @@ using Microsoft.AspNetCore.Http;
 
 namespace API.Helper
 {
-    public class CompanyExecutiveResolver : IValueResolver<CompanyExecutiveTeam, CompanyExecutiveTeamDto, string>
+    public class CarPhotoResolver : IValueResolver<CarPhoto, CarPhotoDto, string>
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly HttpRequest baseUrl;
 
-        public CompanyExecutiveResolver(IHttpContextAccessor httpContextAccessor)
+        public CarPhotoResolver(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
             baseUrl = _httpContextAccessor.HttpContext?.Request;
         }
 
-        public string Resolve(CompanyExecutiveTeam source, CompanyExecutiveTeamDto destination, string destMember, ResolutionContext context)
+        public string Resolve(CarPhoto source, CarPhotoDto destination, string destMember, ResolutionContext context)
         {
-            if (!string.IsNullOrEmpty(source.Photo))
+            if (!string.IsNullOrEmpty(source.PictureUrl))
             {
-                return  $"{baseUrl.Scheme}://{baseUrl.Host}{source.Photo}";
+                return $"{baseUrl.Scheme}://{baseUrl.Host}{source.PictureUrl}";
             }
             return null;
         }

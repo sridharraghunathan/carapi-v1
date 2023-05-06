@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using AutoMapper;
 using core.Dtos;
 using Infrastructure.CarModels;
 using Infrastructure.interfaces;
@@ -14,22 +15,26 @@ namespace API.Controllers
     public class CarController : BaseApiController
     {
 
-       private readonly ICarRepository _carRepository;
+        private readonly ICarRepository _carRepository;
+        private readonly IMapper _mapper;
+
         // private IWebHostEnvironment _hostingEnvironment; 
-        public CarController(ICarRepository carRepository
-      //  , IWebHostEnvironment hostingEnvironment
+        public CarController(ICarRepository carRepository,
+        IMapper mapper
+        //  , IWebHostEnvironment hostingEnvironment
         )
         {
             _carRepository = carRepository;
+            _mapper = mapper;
             // _hostingEnvironment = hostingEnvironment;
         }
 
         //Upload the file 
-        [HttpPost("upload") ]
-        public  IActionResult UploadFile()  
-        {  
-             
-       try
+        [HttpPost("upload")]
+        public IActionResult UploadFile()
+        {
+
+            try
             {
                 var file = Request.Form.Files[0];
                 var folderName = Path.Combine("wwwroot/images", "car");
@@ -54,73 +59,74 @@ namespace API.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex}");
             }
-            
-        }  
-  
-    
+
+        }
+
+
 
         // Task<List<Car>> GetCarDataAsync();
-          [HttpGet("carinfo")]
-        public async Task<List<Car>> GetCarDataAsync()
+        [HttpGet("carinfo")]
+        public async Task<ActionResult<List<Car>>> GetCarDataAsync()
         {
-            return await _carRepository.GetCarDataAsync();
+            var car = await _carRepository.GetCarDataAsync();
+            return Ok(_mapper.Map<List<Car>, List<CarDto>>(car));
         }
 
         // Task<Car> GetCarDataByIdAsync(int carId);
         [HttpGet("carinfo/{carId}")]
-        public async Task<Car> GetCarDataByIdAsync( int carId)
+        public async Task<Car> GetCarDataByIdAsync(int carId)
         {
-           return await _carRepository.GetCarDataByIdAsync(carId);  
+            return await _carRepository.GetCarDataByIdAsync(carId);
         }
 
         // Task<Dictionary<string, bool>> CreateCarDataAsync(Car car);
         [HttpPost("carinfo")]
         public async Task<Dictionary<string, bool>> CreateCarDataAsync([FromBody] Car car)
         {
-           return await _carRepository.CreateCarDataAsync(car);
+            return await _carRepository.CreateCarDataAsync(car);
         }
 
         // Task<Dictionary<string, bool>> UpdateCarDataAsync(int carId, Car carData);
         [HttpPut("carinfo/{carId}")]
         public async Task<Dictionary<string, bool>> UpdateCarDataAsync(int carId, [FromBody] Car carData)
         {
-           return  await _carRepository.UpdateCarDataAsync( carId,carData);
+            return await _carRepository.UpdateCarDataAsync(carId, carData);
         }
 
         // Task<Dictionary<string, bool>> RemoveCarDataAsync(int carId);
         [HttpDelete("carinfo/{carId}")]
         public async Task<Dictionary<string, bool>> RemoveCarDataAsync(int carId)
         {
-           return await _carRepository.RemoveCarDataAsync(carId);
+            return await _carRepository.RemoveCarDataAsync(carId);
         }
 
         // Task<List<Car>> GetCarDataPaginationAsync(int pageSize, int pageNumber);
         [HttpGet("carinfo/pagination")]
-        public async Task<List<Car>> GetCarDataPaginationAsync([FromQuery]int pageSize, [FromQuery] int pageNumber)
+        public async Task<List<Car>> GetCarDataPaginationAsync([FromQuery] int pageSize, [FromQuery] int pageNumber)
         {
-           return await _carRepository.GetCarDataPaginationAsync(pageSize,   pageNumber);  
+            return await _carRepository.GetCarDataPaginationAsync(pageSize, pageNumber);
         }
 
 
         // Task<Dictionary<string, bool>> CreateUserGeneralEnquiryMessageAsync(UserGeneralEnquiryMessageDTO enquiry );
         [HttpPost("generalenquiry")]
-        public async Task<Dictionary<string, bool>>  CreateUserGeneralEnquiryMessageAsync([FromBody] UserGeneralEnquiryMessageDTO enquiry )
+        public async Task<Dictionary<string, bool>> CreateUserGeneralEnquiryMessageAsync([FromBody] UserGeneralEnquiryMessageDTO enquiry)
         {
-         return await _carRepository.CreateUserGeneralEnquiryMessageAsync(enquiry);  
+            return await _carRepository.CreateUserGeneralEnquiryMessageAsync(enquiry);
         }
         // Task<Dictionary<string, bool>> CreateUserSpecificCarEnquiryMessageAsync();
-         [HttpPost("specificcarenquiry")]
+        [HttpPost("specificcarenquiry")]
         public async Task<Dictionary<string, bool>> CreateUserSpecificCarEnquiryMessageAsync()
         {
-          return await _carRepository.CreateUserSpecificCarEnquiryMessageAsync();    
+            return await _carRepository.CreateUserSpecificCarEnquiryMessageAsync();
         }
         // Task<List<Car>> GetCarFilterAsync(SearchRequest search);
         [HttpGet("carinfo/search")]
         public async Task<List<Car>> GetCarFilterAsync([FromQuery] SearchRequest search)
         {
-           return await _carRepository.GetCarFilterAsync(search);
+            return await _carRepository.GetCarFilterAsync(search);
         }
-        
+
 
     }
 }
