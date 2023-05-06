@@ -32,17 +32,17 @@ namespace API.Controllers
                     new CarHomeCarousel {
                             CarCaption ="WOW FACTOR STANDARD",
                             CarText ="Allow us to guide you through the innovative stress free approach in finding your dream car.",
-                            CarImage ="images/car/car-1.jpg"
+                            CarImage ="/images/car/car-1.jpg"
                     },
                         new CarHomeCarousel {
                             CarCaption ="EXPLORE YOUR DREAM CAR",
                             CarText ="Allow us to guide you through the innovative stress free approach in finding your dream car.",
-                            CarImage ="images/car/car-2.jpg"
+                            CarImage ="/images/car/car-2.jpg"
                     },
                         new CarHomeCarousel {
                             CarCaption ="WE ARE WHEEL",
                             CarText ="Allow us to guide you through the innovative stress free approach in finding your dream car.",
-                            CarImage ="images/car/car-3.jpg"
+                            CarImage ="/images/car/car-3.jpg"
                     }
             };
 
@@ -56,10 +56,10 @@ namespace API.Controllers
         }
 
         [HttpGet("carousel")]
-        public async Task<List<CarHomeCarousel>> GetCarHomeCarousels()
+        public async Task<List<CarHomeCarouselDto>> GetCarHomeCarousels()
         {
             var carousel = await _carStoresDBContext.CarHomeCarousel.ToListAsync();
-            return carousel;
+            return _mapper.Map<List<CarHomeCarousel>, List<CarHomeCarouselDto>>(carousel);
         }
 
         [HttpPost("carshop")]

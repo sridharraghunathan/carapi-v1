@@ -16,6 +16,8 @@ namespace API.Helper
                          .ForMember(s => s.PictureUrl, d => d.MapFrom<CarPhotoResolver>()); ;
             CreateMap<CarFeature, CarFeatureDto>();
             CreateMap<Car, CarDto>();
+            CreateMap<CarHomeCarousel, CarHomeCarouselDto>()
+                 .ForMember(s => s.CarImage, d => d.MapFrom<CarCarouselResolver>()); ;;
         }
     }
 }
